@@ -1,0 +1,74 @@
+div{
+    border:1px solid rgb(128, 124, 124)
+}
+
+body{
+    display:flex;
+    justify-content: center;    /*this centers the calculator horizontally on the page*/
+}
+
+#calculator{
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /*centers the buttons and the screen
+                                inside of the calculator*/
+
+    width:400px;    /*width was created setting first the total size of the buttons
+                      (77 including borders), then calculating the width of the button
+                      parent: 77*4 + 14*3 (in order to have 14px of space-between) = 350,
+                      then adding 25 on left and right to create some space on the borders*/
+    height:540px;
+    margin-top:80px;
+
+    border-radius: 13px;
+    background-color: rgb(248, 247, 247);
+    
+}
+
+#screen{
+    height:90px;
+    width:350px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: rgb(222, 245, 224);
+}
+
+#buttons{
+    display: flex;
+    flex-wrap: wrap;    /*we want the buttons to wrap in multiple rows if they 
+                          don't fit into the calculator size*/
+    justify-content: space-between;
+
+    width:350px;
+    height:410px;
+    border:none;
+}
+
+#buttons div{
+    display: flex;
+    align-items: center;
+    justify-content: center;    /*all this centres the symbol(number or operator)
+                                  inside of the div box*/
+
+    width:75px; /*those 2 values where chosen arbitrarily because they looked good*/
+    height:62px;
+
+    border-radius: 5px;
+    font-size: 30px;
+}
+
+#buttons #clear{
+    background-color: rgb(253, 185, 185);
+    font-size: 25px;
+}
+#buttons #delete{
+    background-color: rgb(195, 196, 255);
+    font-size: 25px;
+}
+
+#buttons #equal{
+    background-color: rgb(253, 225, 192);
+    font-size: 35px;
+}
+
