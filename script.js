@@ -27,9 +27,30 @@ function operate(operator, a, b){
     }
 }
 
-//get the references to the numbers through a nodeList
+//get the references
 const numbers = document.querySelectorAll(".number");
+const operators = document.querySelectorAll(".operator");
 const upperScreen = document.querySelector("#upper");
 
 //set an add event listener for every number
-numbers.forEach( (number) => number.addEventListener("click", () => upperScreen.textContent += number.textContent))
+numbers.forEach( (number) => number.addEventListener("click", () => {
+    upperScreen.textContent += number.textContent
+}));
+
+//set an add event listener for the operators
+operators.forEach( (operator) => operator.addEventListener("click", () => {
+    if(operator.getAttribute("id") === "power"){
+        upperScreen.textContent += "^";
+    }
+    else if(operator.getAttribute("id") === "factorial"){
+        upperScreen.textContent += "!";
+    }
+    else if(operator.getAttribute("id") === "equal"){
+
+    }
+    else{
+        upperScreen.textContent += operator.textContent;
+    }
+        
+}));
+
