@@ -36,9 +36,12 @@ let secondNumber = null;
 let secondOperator = null;
 
 let numbersString = "";
+let lastDigitIsNumber;
+let lastOperatorAssign;
 
 //add the event listeners for the numbers
 numbers.forEach( number => number.addEventListener( "click", () =>{
+    lastDigitIsNumber = true;
     upperScreen.textContent += number.textContent;
 
     numbersString += number.textContent;    //append the current selected number in the string
@@ -48,18 +51,18 @@ let skip = false;
 
 //add the event listeners for the operators
 operators.forEach( operator => operator.addEventListener( "click", () =>{
-    
+    lastDigitIsNumber = false;
     //if this is the first operator being selected 
     if (firstOperator === null){
         if(!skip){
             firstNumber = +numbersString;
             numbersString="";
         }
-            firstOperator = operator.getAttribute("id");      
+        firstOperator = operator.getAttribute("id");  
     }
     else{    
-            secondNumber = +numbersString;
-            numbersString="";     
+        secondNumber = +numbersString;
+        numbersString="";     
         secondOperator = operator.getAttribute("id");
     }
 
@@ -77,7 +80,8 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             skip = true;
             firstOperator = null;
-            secondOperator = null;           
+            secondOperator = null; 
+            lastOperatorAssign = true;      
             //at this point you can do nothing and just wait for the next operator to be clicked
         }
     }
@@ -86,17 +90,17 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
-                upperScreen.textContent +=" " + operator.getAttribute("id")+ " "; 
+                upperScreen.textContent +=operator.getAttribute("id"); 
             else
-                upperScreen.textContent +=" " + operator.textContent +" ";
+                upperScreen.textContent +=operator.textContent;
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function
     }
     else if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
-        upperScreen.textContent += " " + operator.getAttribute("id") +  " "; 
+        upperScreen.textContent +=operator.getAttribute("id"); 
     else 
-        upperScreen.textContent += " " + operator.textContent + " ";
+        upperScreen.textContent +=operator.textContent;
 
 }));
 
@@ -115,7 +119,13 @@ specialBtns.forEach( btn => btn.addEventListener("click", () =>{
         lowerScreen.textContent = "";
     }
     else if (btn.getAttribute("id") === "delete"){
-        
+
+        if(lastDigitIsNumber){
+            numbersString = numbersString.slice(0,-1)
+            upperScreen.textContent = upperScreen.textContent.slice(0,-1)
+
+            if(numbersString === "")
+                lastDigitIsNumber = false;
+        }
     }
-}
-));
+}));
