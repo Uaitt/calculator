@@ -67,7 +67,7 @@ body{
     border:none;
 }
 
-#buttons div{
+#buttons button{
     display: flex;
     align-items: center;
     justify-content: center;    /*all this centres the symbol(number or operator)
@@ -80,6 +80,7 @@ body{
     font-size: 30px;
 
     cursor: default;
+    border:1px solid rgb(128, 124, 124)
 }
 
 #buttons #clear{
