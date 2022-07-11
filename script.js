@@ -43,21 +43,22 @@ numbers.forEach( number => number.addEventListener( "click", () =>{
     numbersString += number.textContent;    //append the current selected number in the string
 }));
 
+let skip;
+
 //add the event listeners for the operators
 operators.forEach( operator => operator.addEventListener( "click", () =>{
     
     //if this is the first operator being selected 
     if (firstOperator === null){
-        firstNumber = +numbersString;
-        numbersString="";
-        firstOperator = operator.getAttribute("id");      
-    }
-    else{
-        if(secondOperator === "="){}
-        else{        
-        secondNumber = +numbersString;
-        numbersString="";
+        if(!skip){
+            firstNumber = +numbersString;
+            numbersString="";
         }
+            firstOperator = operator.getAttribute("id");      
+    }
+    else{    
+            secondNumber = +numbersString;
+            numbersString="";     
         secondOperator = operator.getAttribute("id");
     }
 
@@ -71,21 +72,24 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             lowerScreen.textContent = operate(firstOperator,firstNumber,secondNumber);
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
+            skip = true;
+            firstOperator = null;
+            secondOperator = null;
             
             //at this point you can do nothing and just wait for the next operator to be clicked
         }
     }
     //if the two operators are both assigned, this means that the expression has to be evaluated but no = was provided
-    else if (firstOperator !== null && secondOperator !== null){
-        lowerScreen.textContent = operate(firstOperator,firstNumber,secondNumber);
+    else if (firstOperator !== null && secondOperator !== null){        
+            lowerScreen.textContent = operate(firstOperator,firstNumber,secondNumber);
 
-        if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
-            upperScreen.textContent +=" " + operator.getAttribute("id")+ " "; 
-        else
-            upperScreen.textContent +=" " + operator.textContent +" ";
+            if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
+                upperScreen.textContent +=" " + operator.getAttribute("id")+ " "; 
+            else
+                upperScreen.textContent +=" " + operator.textContent +" ";
 
-        firstNumber = operate(firstOperator,firstNumber,secondNumber);
-        firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function
+            firstNumber = operate(firstOperator,firstNumber,secondNumber);
+            firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function
     }
     else if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
         upperScreen.textContent += " " + operator.getAttribute("id") +  " "; 
