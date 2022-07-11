@@ -26,6 +26,7 @@ function operate(operator, a, b){
 //get the references 
 const numbers = document.querySelectorAll(".number");       
 const operators = document.querySelectorAll(".operator"); 
+const specialBtns = document.querySelectorAll(".special");
 const upperScreen = document.querySelector("#upper");
 const lowerScreen = document.querySelector("#lower");
 
@@ -43,7 +44,7 @@ numbers.forEach( number => number.addEventListener( "click", () =>{
     numbersString += number.textContent;    //append the current selected number in the string
 }));
 
-let skip;
+let skip = false;
 
 //add the event listeners for the operators
 operators.forEach( operator => operator.addEventListener( "click", () =>{
@@ -76,8 +77,7 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             skip = true;
             firstOperator = null;
-            secondOperator = null;
-            
+            secondOperator = null;           
             //at this point you can do nothing and just wait for the next operator to be clicked
         }
     }
@@ -100,3 +100,22 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
 
 }));
 
+//add the event listeners for the special buttons
+specialBtns.forEach( btn => btn.addEventListener("click", () =>{
+    if(btn.getAttribute("id") === "clear"){
+        //reset anything
+        numbersString = "";
+        firstNumber = null;
+        firstOperator = null;
+        secondNumber = null;
+        secondOperator = null;
+        skip = false;
+
+        upperScreen.textContent = "";
+        lowerScreen.textContent = "";
+    }
+    else if (btn.getAttribute("id") === "delete"){
+        
+    }
+}
+));
