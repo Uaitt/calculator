@@ -26,12 +26,32 @@ body{
 }
 
 #screen{
+
     height:90px;
     width:350px;
     margin-bottom: 20px;
     margin-top: 20px;
+
     border-radius: 5px;
     background-color: rgb(222, 245, 224);
+    font-size: 30px;
+}
+
+#upper{
+    display: flex;
+    flex-direction: row-reverse;
+
+    width:350px;    
+    height:40px;
+    border: none;
+}
+
+#lower{
+    display: flex;
+    flex-direction: row-reverse;
+    width: 350px;
+    height: 50px;
+    border:none;
 }
 
 #buttons{
@@ -40,7 +60,8 @@ body{
                           don't fit into the calculator size*/
     justify-content: space-between;
 
-    width:350px;
+    width:350px;    /*if the width is exactly 350 pixels our 77 divs buttons will fit perfectly
+                      4 per row and have (350-77*4)/3 = 14 pixels of space between*/
     height:410px;
     border:none;
 }
@@ -56,6 +77,8 @@ body{
 
     border-radius: 5px;
     font-size: 30px;
+
+    cursor: default;
 }
 
 #buttons #clear{

@@ -14,8 +14,8 @@ function divide(a,b){
     return a/b;
 }
 
-function operate(operator , a, b){
-    switch(operator){
+function operate(operator, a, b){
+    switch(operator){   //operator is a string
         case "+": add(a,b);
                     break;
         case "-": subtract(a,b);
@@ -26,3 +26,10 @@ function operate(operator , a, b){
                     break;
     }
 }
+
+//get the references to the numbers through a nodeList
+const numbers = document.querySelectorAll(".number");
+const upperScreen = document.querySelector("#upper");
+
+//set an add event listener for every number
+numbers.forEach( (number) => number.addEventListener("click", () => upperScreen.textContent += number.textContent))
