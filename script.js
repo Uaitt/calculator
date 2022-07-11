@@ -62,11 +62,13 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
         secondOperator = operator.getAttribute("id");
     }
 
-    if (operator.getAttribute("id") === "=") {
+    if(firstOperator === "/" && secondNumber === 0)
+        lowerScreen.textContent = "Error"
+    else if (operator.getAttribute("id") === "=") {
         
         //if the second number does not exist do nothing
         if (secondNumber === null){
-            
+            lowerScreen.textContent = "Error"
         }
         else{              
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
