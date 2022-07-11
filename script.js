@@ -69,7 +69,7 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             
         }
         else{              
-            lowerScreen.textContent = operate(firstOperator,firstNumber,secondNumber);
+            lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             skip = true;
@@ -81,7 +81,7 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
     }
     //if the two operators are both assigned, this means that the expression has to be evaluated but no = was provided
     else if (firstOperator !== null && secondOperator !== null){        
-            lowerScreen.textContent = operate(firstOperator,firstNumber,secondNumber);
+            lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
                 upperScreen.textContent +=" " + operator.getAttribute("id")+ " "; 
