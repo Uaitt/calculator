@@ -26,7 +26,6 @@ body{
 }
 
 #screen{
-
     height:90px;
     width:350px;
     margin-bottom: 20px;
@@ -79,7 +78,7 @@ body{
     border-radius: 5px;
     font-size: 30px;
 
-    cursor: default;
+    cursor:grab;
     border:1px solid rgb(128, 124, 124)
 }
 
@@ -94,6 +93,6 @@ body{
 
 #buttons .idk{
     background-color: rgb(253, 225, 192);
-    font-size: 35px;
+    font-size: 30px;
 }
 

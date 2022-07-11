@@ -15,7 +15,7 @@ function divide(a,b){
 }
 
 function operate(operator, a, b){
-    switch(operator){   //operator is a string
+    switch(operator){ 
         case "+": return add(a,b);
         case "-": return subtract(a,b);
         case "*": return multiply(a,b);
@@ -23,8 +23,8 @@ function operate(operator, a, b){
     }
 }
 
-//get the references 
-const numbers = document.querySelectorAll(".number");       
+const numbers = document.querySelectorAll(".number");       /*remember that when you have a reference to a DOM node, the variable 
+                                                              that stores the reference is storing the entire HTML element, tags included*/
 const operators = document.querySelectorAll(".operator"); 
 const specialBtns = document.querySelectorAll(".special");
 const upperScreen = document.querySelector("#upper");
@@ -35,11 +35,16 @@ let firstOperator = null;
 let secondNumber = null;
 let secondOperator = null;
 
-let numbersString = "";
+let numbersString = ""; //temporary string that will store the number typed in the calculator
+
 let lastDigitIsNumber;
 let lastOperatorAssign;
+let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
+                          first and second operator, as well as the numbers. The skipAssign flag makes possible 
+                          that when you press the = the first number of the next operation becomes the result of the
+                          previous expression evaluated, making it skin the assignment of the firstNumber from the 
+                          numberString*/
 
-//add the event listeners for the numbers
 numbers.forEach( number => number.addEventListener( "click", () =>{
     lastDigitIsNumber = true;
     upperScreen.textContent += number.textContent;
@@ -47,20 +52,17 @@ numbers.forEach( number => number.addEventListener( "click", () =>{
     numbersString += number.textContent;    //append the current selected number in the string
 }));
 
-let skip = false;
-
-//add the event listeners for the operators
 operators.forEach( operator => operator.addEventListener( "click", () =>{
     lastDigitIsNumber = false;
+
     //if this is the first operator being selected 
     if (firstOperator === null){
-        if(!skip){
+        if(!skipAssign){
             firstNumber = +numbersString;
             numbersString="";
         }
         firstOperator = operator.getAttribute("id");  
-    }
-    else{    
+    }else{    
         secondNumber = +numbersString;
         numbersString="";     
         secondOperator = operator.getAttribute("id");
@@ -68,24 +70,20 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
 
     if(firstOperator === "/" && secondNumber === 0)
         lowerScreen.textContent = "Error"
-    else if (operator.getAttribute("id") === "=") {
-        
-        //if the second number does not exist do nothing
-        if (secondNumber === null){
+    else if(operator.getAttribute("id") === "="){        
+        if(secondNumber === null){
             lowerScreen.textContent = "Error"
         }
         else{              
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
-            skip = true;
+            skipAssign = true;
             firstOperator = null;
             secondOperator = null; 
             lastOperatorAssign = true;      
-            //at this point you can do nothing and just wait for the next operator to be clicked
         }
     }
-    //if the two operators are both assigned, this means that the expression has to be evaluated but no = was provided
     else if (firstOperator !== null && secondOperator !== null){        
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
@@ -95,17 +93,16 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
                 upperScreen.textContent +=operator.textContent;
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
-            firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function
+            firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function later on
     }
     else if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
         upperScreen.textContent +=operator.getAttribute("id"); 
     else 
         upperScreen.textContent +=operator.textContent;
-
 }));
 
 //add the event listeners for the special buttons
-specialBtns.forEach( btn => btn.addEventListener("click", () =>{
+specialBtns.forEach(btn => btn.addEventListener("click", () =>{
     if(btn.getAttribute("id") === "clear"){
         //reset anything
         numbersString = "";
@@ -113,7 +110,7 @@ specialBtns.forEach( btn => btn.addEventListener("click", () =>{
         firstOperator = null;
         secondNumber = null;
         secondOperator = null;
-        skip = false;
+        skipAssign = false;
 
         upperScreen.textContent = "";
         lowerScreen.textContent = "";
@@ -123,9 +120,22 @@ specialBtns.forEach( btn => btn.addEventListener("click", () =>{
         if(lastDigitIsNumber){
             numbersString = numbersString.slice(0,-1)
             upperScreen.textContent = upperScreen.textContent.slice(0,-1)
-
-            if(numbersString === "")
+            
+            if(numbersString === " ")
                 lastDigitIsNumber = false;
+        }
+        else if(firstOperator !== null && secondOperator == null){
+            upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+            firstOperator = null;
+            skipAssign = true;
+            lastDigitIsNumber = true;
+        }
+        else if(firstOperator !== null && secondOperator !== null){
+            upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+            secondOperator = null;
+            firstOperator = null;
+            skipAssign = true;
+            lastDigitIsNumber = true;
         }
     }
 }));
