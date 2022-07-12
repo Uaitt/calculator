@@ -49,6 +49,7 @@ let secondOperator = null;
 
 let numbersString = ""; //temporary string that will store the number typed in the calculator
 
+let decimals;
 let lastDigitIsNumber = false; 
 let lastOperatorAssign = false; 
 let lastBtnClickedDelete = false;  
@@ -60,19 +61,28 @@ let skipAssign = false; /*when you press the equal sign to evaluate an expressio
                           numberString*/
 
 numbers.forEach( number => number.addEventListener( "click", () =>{
+
+    if(!lastDigitIsNumber)
+        lastBtnClickedPoint = false;
+    
+    if(lastBtnClickedPoint === true)
+        decimals++;
+
     lastDigitIsNumber = true;
     lastBtnClickedDelete = false;
 
-    if(!(lastBtnClickedPoint === true && number.getAttribute("id") === ".")){
+    if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
+
+    }else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1){
         upperScreen.textContent += number.textContent;
 
         numbersString += number.textContent;  
     }
 
-    if(number.getAttribute("id") === ".")
+    if(number.getAttribute("id") === "."){
         lastBtnClickedPoint = true;
-    else
-        lastBtnClickedPoint = false;
+        decimals = 0;
+    }
 
 }));
 
