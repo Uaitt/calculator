@@ -152,6 +152,7 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
         secondNumber = null;
         secondOperator = null;
         skipAssign = false;
+        lastOperatorAssign = false;
 
         upperScreen.textContent = "";
         lowerScreen.textContent = "";
