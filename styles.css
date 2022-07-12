@@ -1,5 +1,5 @@
 div{
-    border:2px solid rgb(128, 124, 124)
+    border:2px solid rgb(94, 92, 92)
 }
 
 body{
@@ -85,7 +85,7 @@ body{
     font-size: 30px;
 
     cursor:grab;
-    border:2px solid rgb(128, 124, 124);
+    border:2px solid rgb(94, 92, 92);
     color: rgb(95, 93, 93)
 }
 
@@ -108,3 +108,21 @@ footer{
     margin-top: 70px;
     color: rgb(95, 93, 93)
 }
+#buttons .number:hover{
+    background-color: rgb(226, 224, 224);
+}
+#buttons .operator:hover{
+    background-color: rgb(226, 224, 224);
+}
+#buttons #clear:hover{
+    background-color: rgb(240, 183, 183);
+}
+
+#buttons #delete:hover{
+    background-color: rgb(187, 188, 240)
+}
+
+#buttons .idk:hover{
+    background-color: rgb(241, 217, 190);
+}
+
