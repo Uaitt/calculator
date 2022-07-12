@@ -39,6 +39,7 @@ let numbersString = ""; //temporary string that will store the number typed in t
 
 let lastDigitIsNumber;
 let lastOperatorAssign;
+let lastBtnClickedDelete;
 let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
                           first and second operator, as well as the numbers. The skipAssign flag makes possible 
                           that when you press the = the first number of the next operation becomes the result of the
@@ -47,6 +48,7 @@ let skipAssign = false; /*when you press the equal sign to evaluate an expressio
 
 numbers.forEach( number => number.addEventListener( "click", () =>{
     lastDigitIsNumber = true;
+    lastBtnClickedDelete = false;
     upperScreen.textContent += number.textContent;
 
     numbersString += number.textContent;    //append the current selected number in the string
@@ -54,6 +56,7 @@ numbers.forEach( number => number.addEventListener( "click", () =>{
 
 operators.forEach( operator => operator.addEventListener( "click", () =>{
     lastDigitIsNumber = false;
+    lastBtnClickedDelete = false;
 
     //if this is the first operator being selected 
     if (firstOperator === null){
@@ -117,25 +120,28 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
     }
     else if (btn.getAttribute("id") === "delete"){
 
-        if(lastDigitIsNumber){
-            numbersString = numbersString.slice(0,-1)
-            upperScreen.textContent = upperScreen.textContent.slice(0,-1)
+        if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
+            if(lastDigitIsNumber){
+                numbersString = numbersString.slice(0,-1)
+                upperScreen.textContent = upperScreen.textContent.slice(0,-1)
             
-            if(numbersString === " ")
-                lastDigitIsNumber = false;
+                if(numbersString === " ")
+                    lastDigitIsNumber = false;
+            }
+            else if(firstOperator !== null && secondOperator == null){
+                upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+                firstOperator = null;
+                skipAssign = true;
+                lastDigitIsNumber = true;
+            }
+            else if(firstOperator !== null && secondOperator !== null){
+                upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+                secondOperator = null;
+                firstOperator = null;
+                skipAssign = true;
+                lastDigitIsNumber = true;
+            }
         }
-        else if(firstOperator !== null && secondOperator == null){
-            upperScreen.textContent = upperScreen.textContent.slice(0,-1);
-            firstOperator = null;
-            skipAssign = true;
-            lastDigitIsNumber = true;
-        }
-        else if(firstOperator !== null && secondOperator !== null){
-            upperScreen.textContent = upperScreen.textContent.slice(0,-1);
-            secondOperator = null;
-            firstOperator = null;
-            skipAssign = true;
-            lastDigitIsNumber = true;
-        }
+        lastBtnClickedDelete = true;
     }
 }));
