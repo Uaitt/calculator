@@ -13,6 +13,17 @@ function multiply(a,b){
 function divide(a,b){
     return a/b;
 }
+function power(a,b){
+    return Math.pow(a,b);
+}
+
+function factorial(a,b){
+
+    if (a === 0)
+        return (b+1);
+    else
+        return a*factorial(a-1,b);
+}
 
 function operate(operator, a, b){
     switch(operator){ 
@@ -20,6 +31,8 @@ function operate(operator, a, b){
         case "-": return subtract(a,b);
         case "*": return multiply(a,b);
         case "/": return divide(a,b);
+        case "^": return power(a,b);
+        case "!": return factorial(a,b);
     }
 }
 
@@ -74,17 +87,21 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             numbersString="";
         }
         firstOperator = operator.getAttribute("id");  
+
+        if(firstOperator === "!")
+            secondNumber = 0;
     }else{    
         secondNumber = +numbersString;
         numbersString="";     
         secondOperator = operator.getAttribute("id");
+
     }
 
     if(firstOperator === "/" && secondNumber === 0)
-        lowerScreen.textContent = "Error"
+        lowerScreen.textContent = "Math error"
     else if(operator.getAttribute("id") === "=" ){        
         if(secondNumber === null){
-            lowerScreen.textContent = "Error"
+            lowerScreen.textContent = "Math error"
         }
         else{              
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
@@ -97,6 +114,11 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
         }
     }
     else if (firstOperator !== null && secondOperator !== null){        
+
+        if(secondOperator === "!"){
+            lowerScreen.textContent ="Math error"
+        }
+        else{
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
@@ -106,6 +128,13 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function later on
+        }
+    }else if(lastOperatorAssign && firstOperator === "!"){
+        lowerScreen.textContent = "Math error"
+    }
+    else if(firstOperator === "!" && secondOperator === null){
+        lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
+        upperScreen.textContent +=operator.getAttribute("id"); 
     }
     else if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
         upperScreen.textContent +=operator.getAttribute("id"); 
@@ -128,7 +157,6 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
         lowerScreen.textContent = "";
     }
     else if (btn.getAttribute("id") === "delete"){
-        console.log(lastBtnClickedDelete)
         if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
             if(lastDigitIsNumber){
                 numbersString = numbersString.slice(0,-1)
