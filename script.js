@@ -49,6 +49,7 @@ let secondOperator = null;
 
 let numbersString = ""; //temporary string that will store the number typed in the calculator
 
+let lastDigitIsDot = false;
 let decimals;
 let lastDigitIsNumber = false; 
 let lastOperatorAssign = false; 
@@ -61,21 +62,24 @@ let skipAssign = false; /*when you press the equal sign to evaluate an expressio
                           numberString*/
 
 numbers.forEach( number => number.addEventListener( "click", () =>{
-
+    
     if(!lastDigitIsNumber)
         lastBtnClickedPoint = false;
     
+    if (lastDigitIsDot)
+        lastBtnClickedPoint = true;
+    
+    lastDigitIsNumber = true;
+    lastBtnClickedDelete = false;
+      
     if(lastBtnClickedPoint === true)
         decimals++;
 
-    lastDigitIsNumber = true;
-    lastBtnClickedDelete = false;
-
     if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
 
-    }else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1){
+    }
+    else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
         upperScreen.textContent += number.textContent;
-
         numbersString += number.textContent;  
     }
 
@@ -89,6 +93,7 @@ numbers.forEach( number => number.addEventListener( "click", () =>{
 operators.forEach( operator => operator.addEventListener( "click", () =>{
     lastDigitIsNumber = false;
     lastBtnClickedDelete = false;
+    lastDigitIsDot = false;
 
     if (firstOperator === null){
         if(!skipAssign){
@@ -167,6 +172,7 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
         lastOperatorAssign = false;
         lastBtnClickedPoint = false;
         lastBtnClickedDelete = false;
+        lastDigitIsDot = false;
 
         upperScreen.textContent = "";
         lowerScreen.textContent = "";
@@ -178,8 +184,11 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
                 numbersString = numbersString.slice(0,-1)
                 upperScreen.textContent = upperScreen.textContent.slice(0,-1)
             
-                if(numbersString === " ")
+                if(numbersString === " " || numbersString.includes(".")){
                     lastDigitIsNumber = false;
+                    decimals = 0;
+                    lastDigitIsDot= true;
+                }
             }
             else if(firstOperator !== null && secondOperator == null){
                 upperScreen.textContent = upperScreen.textContent.slice(0,-1);
