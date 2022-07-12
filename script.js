@@ -49,14 +49,14 @@ let secondOperator = null;
 
 let numbersString = ""; //temporary string that will store the number typed in the calculator
 
-let lastDigitIsNumber;
-let lastOperatorAssign;
-let lastBtnClickedDelete;
-let lastBtnClickedPoint;
+let lastDigitIsNumber = false; 
+let lastOperatorAssign = false; 
+let lastBtnClickedDelete = false;  
+let lastBtnClickedPoint = false;
 let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
                           first and second operator, as well as the numbers. The skipAssign flag makes possible 
                           that when you press the = the first number of the next operation becomes the result of the
-                          previous expression evaluated, making it skin the assignment of the firstNumber from the 
+                          previous expression evaluated, making it skip the assignment of the firstNumber from the 
                           numberString*/
 
 numbers.forEach( number => number.addEventListener( "click", () =>{
@@ -66,7 +66,7 @@ numbers.forEach( number => number.addEventListener( "click", () =>{
     if(!(lastBtnClickedPoint === true && number.getAttribute("id") === ".")){
         upperScreen.textContent += number.textContent;
 
-        numbersString += number.textContent;    //append the current selected number in the string
+        numbersString += number.textContent;  
     }
 
     if(number.getAttribute("id") === ".")
@@ -80,7 +80,6 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
     lastDigitIsNumber = false;
     lastBtnClickedDelete = false;
 
-    //if this is the first operator being selected 
     if (firstOperator === null){
         if(!skipAssign){
             firstNumber = +numbersString;
@@ -88,20 +87,22 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
         }
         firstOperator = operator.getAttribute("id");  
 
-        if(firstOperator === "!")
+        if(firstOperator === "!")   /*this is done because the factorial needs to be called by operate which always
+                                      take in 2 parameters. The 0 number will be useful in the factorial function*/
             secondNumber = 0;
     }else{    
         secondNumber = +numbersString;
         numbersString="";     
         secondOperator = operator.getAttribute("id");
-
     }
 
     if(firstOperator === "/" && secondNumber === 0)
-        lowerScreen.textContent = "Math error"
+        lowerScreen.textContent = "Math error";
     else if(operator.getAttribute("id") === "=" ){        
         if(secondNumber === null){
-            lowerScreen.textContent = "Math error"
+            lowerScreen.textContent = firstNumber;
+            firstOperator = null;
+            skipAssign = true;
         }
         else{              
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
@@ -110,7 +111,9 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             skipAssign = true;
             firstOperator = null;
             secondOperator = null; 
-            lastOperatorAssign = true;      
+            lastOperatorAssign = true;      /*we just can't do, like in line 129, firstOperator = secondOperator, because we can't pass to the operate function the =
+                                              operator. We need to reset both operators and wait for the user to input the first operator and the second operator again. 
+                                              It's like we will start from fresh with the previous resulting number*/
         }
     }
     else if (firstOperator !== null && secondOperator !== null){        
@@ -127,12 +130,11 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
                 upperScreen.textContent +=operator.textContent;
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
-            firstOperator = secondOperator; //the operator that was just selected will be the one passed to the operate function later on
+            firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation
         }
-    }else if(lastOperatorAssign && firstOperator === "!"){
-        lowerScreen.textContent = "Math error"
     }
-    else if(firstOperator === "!" && secondOperator === null){
+    else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
+
         lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
         upperScreen.textContent +=operator.getAttribute("id"); 
     }
@@ -153,11 +155,14 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
         secondOperator = null;
         skipAssign = false;
         lastOperatorAssign = false;
+        lastBtnClickedPoint = false;
+        lastBtnClickedDelete = false;
 
         upperScreen.textContent = "";
         lowerScreen.textContent = "";
     }
     else if (btn.getAttribute("id") === "delete"){
+
         if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
             if(lastDigitIsNumber){
                 numbersString = numbersString.slice(0,-1)
