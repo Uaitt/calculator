@@ -4,7 +4,8 @@ div{
 
 body{
     display:flex;
-    justify-content: center;    /*this centers the calculator horizontally on the page*/
+    flex-direction: column;
+    align-items: center;    /*this centers the calculator horizontally on the page*/
     font-family: "Roboto", sans-serif;
 }
 
@@ -18,7 +19,7 @@ body{
                       (77 including borders), then calculating the width of the button
                       parent: 77*4 + 14*3 (in order to have 14px of space-between) = 350,
                       then adding 25 on left and right to create some space on the borders*/
-    height:564px;
+    min-height:570px;
     margin-top:80px;
 
     border-radius: 13px;
@@ -84,8 +85,8 @@ body{
     font-size: 30px;
 
     cursor:grab;
-    border:2px solid rgb(92, 91, 91);
-    color: rgb(92, 91, 91);
+    border:2px solid rgb(128, 124, 124);
+    color: rgb(95, 93, 93)
 }
 
 #buttons #clear{
@@ -102,3 +103,8 @@ body{
     font-size: 30px;
 }
 
+footer{
+    font-size: 20px;
+    margin-top: 70px;
+    color: rgb(95, 93, 93)
+}
