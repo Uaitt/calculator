@@ -23,8 +23,7 @@ function operate(operator, a, b){
     }
 }
 
-const numbers = document.querySelectorAll(".number");       /*remember that when you have a reference to a DOM node, the variable 
-                                                              that stores the reference is storing the entire HTML element, tags included*/
+const numbers = document.querySelectorAll(".number"); 
 const operators = document.querySelectorAll(".operator"); 
 const specialBtns = document.querySelectorAll(".special");
 const upperScreen = document.querySelector("#upper");
@@ -40,6 +39,7 @@ let numbersString = ""; //temporary string that will store the number typed in t
 let lastDigitIsNumber;
 let lastOperatorAssign;
 let lastBtnClickedDelete;
+let lastBtnClickedPoint;
 let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
                           first and second operator, as well as the numbers. The skipAssign flag makes possible 
                           that when you press the = the first number of the next operation becomes the result of the
@@ -49,9 +49,18 @@ let skipAssign = false; /*when you press the equal sign to evaluate an expressio
 numbers.forEach( number => number.addEventListener( "click", () =>{
     lastDigitIsNumber = true;
     lastBtnClickedDelete = false;
-    upperScreen.textContent += number.textContent;
 
-    numbersString += number.textContent;    //append the current selected number in the string
+    if(!(lastBtnClickedPoint === true && number.getAttribute("id") === ".")){
+        upperScreen.textContent += number.textContent;
+
+        numbersString += number.textContent;    //append the current selected number in the string
+    }
+
+    if(number.getAttribute("id") === ".")
+        lastBtnClickedPoint = true;
+    else
+        lastBtnClickedPoint = false;
+
 }));
 
 operators.forEach( operator => operator.addEventListener( "click", () =>{
@@ -73,7 +82,7 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
 
     if(firstOperator === "/" && secondNumber === 0)
         lowerScreen.textContent = "Error"
-    else if(operator.getAttribute("id") === "="){        
+    else if(operator.getAttribute("id") === "=" ){        
         if(secondNumber === null){
             lowerScreen.textContent = "Error"
         }
@@ -101,7 +110,7 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
     else if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
         upperScreen.textContent +=operator.getAttribute("id"); 
     else 
-        upperScreen.textContent +=operator.textContent;
+        upperScreen.textContent +=operator.textContent; 
 }));
 
 //add the event listeners for the special buttons
@@ -119,7 +128,7 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
         lowerScreen.textContent = "";
     }
     else if (btn.getAttribute("id") === "delete"){
-
+        console.log(lastBtnClickedDelete)
         if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
             if(lastDigitIsNumber){
                 numbersString = numbersString.slice(0,-1)
