@@ -38,101 +38,103 @@ function operate(operator, a, b){
 
 function manageDigit(number, isNode){
     if(!mathError){
-    if(!lastDigitIsNumber)
-        dotIsPresent = false;
+        if(!lastDigitIsNumber)
+            dotIsPresent = false;
                         
-    if (lastDigitIsDot)
-        dotIsPresent = true;
+        if (lastDigitIsDot)
+            dotIsPresent = true;
                         
-    lastDigitIsNumber = true;
-    lastBtnClickedDelete = false;
+        lastDigitIsNumber = true;
+        lastBtnClickedDelete = false;
                           
-    if(dotIsPresent === true)
-        decimals++;
+        if(dotIsPresent === true)
+            decimals++;
                     
-    //number is a DOM node
-    if(isNode){
-        if(dotIsPresent === true && number.getAttribute("id") === "."){
-        }
-        else if(dotIsPresent === false || dotIsPresent === true && decimals <= 1 ){
-            upperScreen.textContent += number.textContent;
-            numbersString += number.textContent;  
-        }
+        //number is a DOM node
+        if(isNode){
+            if(dotIsPresent === true && number.getAttribute("id") === "."){
+            }
+            else if(dotIsPresent === false || dotIsPresent === true && decimals <= 1 ){
+                upperScreen.textContent += number.textContent;
+                numbersString += number.textContent;  
+            }
                         
-        if(number.getAttribute("id") === "."){
-            dotIsPresent = true;
-            decimals = 0;
+            if(number.getAttribute("id") === "."){
+                dotIsPresent = true;
+                decimals = 0;
         }
-    }else{
-        if(dotIsPresent === true && number.key === "."){
-        }
-        else if(dotIsPresent === false || dotIsPresent === true && decimals <= 1 ){
-            upperScreen.textContent += number.key;
-            numbersString += number.key
-        }
+        }else{
+            //number is an event
+            if(dotIsPresent === true && number.key === "."){
+            }
+            else if(dotIsPresent === false || dotIsPresent === true && decimals <= 1 ){
+                upperScreen.textContent += number.key;
+                numbersString += number.key
+            }
 
-        if(number.key === "."){
-            dotIsPresent = true;
-            decimals = 0;
+            if(number.key === "."){
+                dotIsPresent = true;
+                decimals = 0;
+            }
         }
     }
-}
 }
 
 function manageOperator (operator, isNode){
+
     if(!mathError){
-    lastDigitIsNumber = false;
-    lastBtnClickedDelete = false;
-    lastDigitIsDot = false;
+        lastDigitIsNumber = false;
+        lastDigitIsDot = false;
+        lastBtnClickedDelete = false;
 
-    if (firstOperator === null){
-        if(!skipAssign){    
-            firstNumber = +numbersString;
-            numbersString="";
+        if (firstOperator === null){
+            if(!skipAssign){    
+                firstNumber = +numbersString;
+                numbersString="";
+            }
+            if(isNode)
+                firstOperator = operator.getAttribute("id");  
+            else
+                firstOperator = operator.key;
+
+            if(firstOperator === "!")   /*this is done because the factorial needs to be called by operate which always
+                                        take in 2 parameters. The 0 number will be useful in the factorial function*/
+                secondNumber = 0;
+        }else{    
+            secondNumber = +numbersString;
+            numbersString="";    
+
+            if(isNode) 
+                secondOperator = operator.getAttribute("id");
+            else
+                secondOperator = operator.key;
         }
-        if(isNode)
-            firstOperator = operator.getAttribute("id");  
-        else
-            firstOperator = operator.key;
 
-        if(firstOperator === "!")   /*this is done because the factorial needs to be called by operate which always
-                                      take in 2 parameters. The 0 number will be useful in the factorial function*/
-            secondNumber = 0;
-    }else{    
-        secondNumber = +numbersString;
-        numbersString="";    
-
-        if(isNode) 
-            secondOperator = operator.getAttribute("id");
-        else
-            secondOperator = operator.key;
-    }
-
-    if(firstOperator === "/" && secondNumber === 0){
-        lowerScreen.textContent = "Math error";
-        mathError = true;
-    }
-    else if( firstOperator === "=" && secondNumber === null || secondOperator === "=" && secondNumber !== null){        
-        if(secondNumber === null){
-            lowerScreen.textContent = firstNumber;
-            firstOperator = null;
-            skipAssign = true;
+        if(firstOperator === "/" && secondNumber === 0){
+            lowerScreen.textContent = "Math error";
+            mathError = true;
         }
-        else{              
-            lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
+        else if( firstOperator === "=" && secondNumber === null || secondOperator === "=" && secondNumber !== null){        
+            if(secondNumber === null){
+                lowerScreen.textContent = firstNumber;
+                firstOperator = null;
+                skipAssign = true;
+            }
+            else{              
+                lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
-            firstNumber = operate(firstOperator,firstNumber,secondNumber);
-            secondNumber = null;
-            skipAssign = true;
+                firstNumber = operate(firstOperator,firstNumber,secondNumber);
+                secondNumber = null;
+                skipAssign = true;
 
-            firstOperator = null;
-            secondOperator = null; 
-            lastOperatorAssign = true;      /*we just can't do, like in line 129, firstOperator = secondOperator, because we can't pass to the operate function the =
-                                              operator. We need to reset both operators and wait for the user to input the first operator and the second operator again. 
-                                              It's like we will start from fresh with the previous resulting number*/
+                firstOperator = null;
+                secondOperator = null; 
+                lastOperatorAssign = true;      /*we just can't do, like in line 129, firstOperator = secondOperator, because we can't pass to the operate function the =
+                                                operator. We need to reset both operators and wait for the user to input the first operator and the second operator again. 
+                                                It's like we will start from fresh with the previous resulting number*/
+            }
         }
-    }
-    else if (firstOperator !== null && secondOperator !== null){        
+        else if (firstOperator !== null && secondOperator !== null){        
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             if(isNode){
@@ -146,25 +148,25 @@ function manageOperator (operator, isNode){
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation        
-    }
-    else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
+        }
+        else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
 
-        lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
+            lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
         
-        if(isNode)
-            upperScreen.textContent +=operator.getAttribute("id"); 
-        else
-            upperScreen.textContent += operator.key
-    }
-    else if(isNode){
+            if(isNode)
+                upperScreen.textContent +=operator.getAttribute("id"); 
+            else
+                upperScreen.textContent += operator.key
+        }
+        else if(isNode){
             if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
                 upperScreen.textContent +=operator.getAttribute("id");
             else
                 upperScreen.textContent +=operator.textContent;
-    }
-    else 
+        }
+        else 
         upperScreen.textContent += operator.key;
-}
+    }
 }
 
 function manageDelete(btn, isNode){
@@ -267,9 +269,11 @@ function manageDelete(btn, isNode){
 function manageKeys(e){
     if(e.key>=0 && e.key<=9 || e.key === ".")
         manageDigit(e,false)
+
     if(e.key === "=" || e.key === "-" || e.key === "+" || e.key === "*" ||
             e.key === "/" || e.key === "!" || e.key === "^")
         manageOperator(e,false)
+
     if(e.key === "Backspace" || e.key === "Clear")
         manageDelete(e,false)
 }

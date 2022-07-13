@@ -5,21 +5,21 @@ div{
 body{
     display:flex;
     flex-direction: column;
-    align-items: center;    /*this centers the calculator horizontally on the page*/
+    align-items: center; 
     font-family: "Roboto", sans-serif;
 }
 
 #calculator{
     display: flex;
     flex-direction: column;
-    align-items: center;    /*centers the buttons and the screen
-                                inside of the calculator*/
+    align-items: center;  
 
     width:400px;    /*width was created setting first the total size of the buttons
                       (77 including borders), then calculating the width of the button
                       parent: 77*4 + 14*3 (in order to have 14px of space-between) = 350,
                       then adding 25 on left and right to create some space on the borders*/
-    min-height:570px;
+    min-height:570px;   /*min-height is set because our screen will expand if the user 
+                          inputs multiple line of calculation*/
     margin-top:80px;
 
     border-radius: 13px;
@@ -40,8 +40,8 @@ body{
     padding:5px;
 
     word-wrap: break-word;
-    word-break: break-all;
-
+    word-break: break-all;  /*those 2 properties will make the screen and the calculator flex if the 
+                              user inputs more than 1 line of calculation*/
 }
 
 #upper{
@@ -76,7 +76,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;    /*all this centres the symbol(number or operator)
-                                  inside of the div box*/
+                                  inside of the button box*/
 
     width:75px; /*those 2 values where chosen arbitrarily because they looked good*/
     height:62px;
@@ -135,4 +135,4 @@ footer{
     font-size: 50px;
     transition: transform 0.3s ease-in-out;
     margin-left: 5px;
-  }
+}
