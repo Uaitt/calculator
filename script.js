@@ -37,6 +37,7 @@ function operate(operator, a, b){
 }
 
 function manageDigit(number, isNode){
+    if(!mathError){
     if(!lastDigitIsNumber)
     lastBtnClickedPoint = false;
                         
@@ -77,8 +78,10 @@ function manageDigit(number, isNode){
         }
     }
 }
+}
 
 function manageOperator (operator, isNode){
+    if(!mathError){
     lastDigitIsNumber = false;
     lastBtnClickedDelete = false;
     lastDigitIsDot = false;
@@ -105,8 +108,10 @@ function manageOperator (operator, isNode){
             secondOperator = operator.key;
     }
 
-    if(firstOperator === "/" && secondNumber === 0)
+    if(firstOperator === "/" && secondNumber === 0){
         lowerScreen.textContent = "Math error";
+        mathError = true;
+    }
     else if( firstOperator === "=" && secondNumber === null || secondOperator === "=" && secondNumber !== null){        
         if(secondNumber === null){
             lowerScreen.textContent = firstNumber;
@@ -127,11 +132,6 @@ function manageOperator (operator, isNode){
         }
     }
     else if (firstOperator !== null && secondOperator !== null){        
-
-        if(secondOperator === "!"){
-            lowerScreen.textContent ="Math error"
-        }
-        else{
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             if(isNode){
@@ -145,7 +145,7 @@ function manageOperator (operator, isNode){
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation
-        }
+        
         
     }
     else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
@@ -163,7 +163,8 @@ function manageOperator (operator, isNode){
                 upperScreen.textContent +=operator.textContent;
     }
     else 
-            upperScreen.textContent += operator.key;
+        upperScreen.textContent += operator.key;
+}
 }
 
 function manageDelete(btn, isNode){
@@ -180,6 +181,7 @@ function manageDelete(btn, isNode){
             lastBtnClickedPoint = false;
             lastBtnClickedDelete = false;
             lastDigitIsDot = false;
+            mathError = false;
 
             upperScreen.textContent = "";
             lowerScreen.textContent = "";
@@ -211,6 +213,7 @@ function manageDelete(btn, isNode){
                 }
             }
             lastBtnClickedDelete = true;
+            mathError = false;
         }
     }
     else{
@@ -260,6 +263,18 @@ function manageDelete(btn, isNode){
         }
     }
 }
+
+function manageKeys(e){
+    if(e.key>=0 && e.key<=9 || e.key === ".")
+        manageDigit(e,false)
+    if(e.key === "=" || e.key === "-" || e.key === "+" || e.key === "*" ||
+            e.key === "/" || e.key === "!" || e.key === "^")
+        manageOperator(e,false)
+    if(e.key === "Backspace" || e.key === "Clear")
+        manageDelete(e,false)
+}
+
+//main
 const numbers = document.querySelectorAll(".number"); 
 const operators = document.querySelectorAll(".operator"); 
 const specialBtns = document.querySelectorAll(".special");
@@ -274,6 +289,7 @@ let secondOperator = null;
 let numbersString = ""; //temporary string that will store the number typed in the calculator
 
 let lastDigitIsDot = false;
+let mathError = false;
 let decimals;
 let lastDigitIsNumber = false; 
 let lastOperatorAssign = false; 
@@ -293,12 +309,3 @@ specialBtns.forEach(btn => btn.addEventListener("click", manageDelete.bind(this,
 
 window.addEventListener("keydown", manageKeys.bind(this));
 
-function manageKeys(e){
-    if(e.key>=0 && e.key<=9 || e.key === ".")
-        manageDigit(e,false)
-    if(e.key === "=" || e.key === "-" || e.key === "+" || e.key === "*" ||
-            e.key === "/" || e.key === "!" || e.key === "^")
-        manageOperator(e,false)
-    if(e.key === "Backspace" || e.key === "Clear")
-        manageDelete(e,false)
-}
