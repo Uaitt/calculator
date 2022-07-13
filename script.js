@@ -36,7 +36,7 @@ function operate(operator, a, b){
     }
 }
 
-function manageDigit(number){
+function manageDigit(number, isNode){
     if(!lastDigitIsNumber)
     lastBtnClickedPoint = false;
                         
@@ -50,7 +50,7 @@ function manageDigit(number){
         decimals++;
                     
     //number is a DOM node
-    if(typeof number.altKey ===  "undefined"){  //remember that if you check for a property that does not exist in an object, it always return undefined and not errors
+    if(isNode){
         if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
         }
         else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
@@ -78,7 +78,7 @@ function manageDigit(number){
     }
 }
 
-function manageOperator (operator){
+function manageOperator (operator, isNode){
     lastDigitIsNumber = false;
     lastBtnClickedDelete = false;
     lastDigitIsDot = false;
@@ -88,20 +88,26 @@ function manageOperator (operator){
             firstNumber = +numbersString;
             numbersString="";
         }
-        firstOperator = operator.getAttribute("id");  
+        if(isNode)
+            firstOperator = operator.getAttribute("id");  
+        else
+            firstOperator = operator.key;
 
         if(firstOperator === "!")   /*this is done because the factorial needs to be called by operate which always
                                       take in 2 parameters. The 0 number will be useful in the factorial function*/
             secondNumber = 0;
     }else{    
         secondNumber = +numbersString;
-        numbersString="";     
-        secondOperator = operator.getAttribute("id");
+        numbersString="";    
+        if(isNode) 
+            secondOperator = operator.getAttribute("id");
+        else
+            secondOperator = operator.key;
     }
 
     if(firstOperator === "/" && secondNumber === 0)
         lowerScreen.textContent = "Math error";
-    else if(operator.getAttribute("id") === "=" ){        
+    else if( firstOperator === "=" && secondNumber === null || secondOperator === "=" && secondNumber !== null){        
         if(secondNumber === null){
             lowerScreen.textContent = firstNumber;
             firstOperator = null;
@@ -128,10 +134,14 @@ function manageOperator (operator){
         else{
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
-            if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
-                upperScreen.textContent +=operator.getAttribute("id"); 
+            if(isNode){
+                if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
+                    upperScreen.textContent +=operator.getAttribute("id"); 
+                else
+                    upperScreen.textContent +=operator.textContent;
+            }
             else
-                upperScreen.textContent +=operator.textContent;
+                upperScreen.textContent += operator.key;
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation
@@ -141,12 +151,19 @@ function manageOperator (operator){
     else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
 
         lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
-        upperScreen.textContent +=operator.getAttribute("id"); 
+        if(isNode)
+            upperScreen.textContent +=operator.getAttribute("id"); 
+        else
+            upperScreen.textContent += operator.key
     }
-    else if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
-        upperScreen.textContent +=operator.getAttribute("id"); 
+    else if(isNode){
+            if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
+                upperScreen.textContent +=operator.getAttribute("id");
+            else
+                upperScreen.textContent +=operator.textContent;
+    }
     else 
-        upperScreen.textContent +=operator.textContent; 
+            upperScreen.textContent += operator.key;
 }
 
 function manageDelete(btn){
@@ -222,10 +239,20 @@ let skipAssign = false; /*when you press the equal sign to evaluate an expressio
                           previous expression evaluated, making it skip the assignment of the firstNumber from the 
                           numberString*/
 
-numbers.forEach( number => number.addEventListener("click", manageDigit.bind(this,number)));
+numbers.forEach( number => number.addEventListener("click", manageDigit.bind(this,number,true)));
 
-window.addEventListener("keydown", manageDigit.bind(this));
+operators.forEach( operator => operator.addEventListener( "click", manageOperator.bind(this,operator,true)));
 
-operators.forEach( operator => operator.addEventListener( "click", manageOperator.bind(this,operator)));
+specialBtns.forEach(btn => btn.addEventListener("click", manageDelete.bind(this,btn,true)));
 
-specialBtns.forEach(btn => btn.addEventListener("click", manageDelete.bind(this,btn)));
+window.addEventListener("keydown", manageKeys.bind(this));
+
+function manageKeys(e){
+    if(e.key>=0 && e.key<=9 || e.key === ".")
+        manageDigit(e,false)
+    if(e.key === "=" || e.key === "-" || e.key === "+" || e.key === "*" ||
+            e.key === "/" || e.key === "!" || e.key === "^")
+        manageOperator(e,false)
+    if(e.key === "Backspace" || e.key === "Clear")
+        manageDelete(e,false)
+}
