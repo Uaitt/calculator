@@ -36,61 +36,33 @@ function operate(operator, a, b){
     }
 }
 
-const numbers = document.querySelectorAll(".number"); 
-const operators = document.querySelectorAll(".operator"); 
-const specialBtns = document.querySelectorAll(".special");
-const upperScreen = document.querySelector("#upper");
-const lowerScreen = document.querySelector("#lower");
-
-let firstNumber = null;
-let firstOperator = null;
-let secondNumber = null;
-let secondOperator = null;
-
-let numbersString = ""; //temporary string that will store the number typed in the calculator
-
-let lastDigitIsDot = false;
-let decimals;
-let lastDigitIsNumber = false; 
-let lastOperatorAssign = false; 
-let lastBtnClickedDelete = false;  
-let lastBtnClickedPoint = false;
-let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
-                          first and second operator, as well as the numbers. The skipAssign flag makes possible 
-                          that when you press the = the first number of the next operation becomes the result of the
-                          previous expression evaluated, making it skip the assignment of the firstNumber from the 
-                          numberString*/
-
-numbers.forEach( number => number.addEventListener( "click", () =>{
-    
+function manageDigit(number){
     if(!lastDigitIsNumber)
-        lastBtnClickedPoint = false;
-    
+    lastBtnClickedPoint = false;
+                            
     if (lastDigitIsDot)
         lastBtnClickedPoint = true;
-    
+                            
     lastDigitIsNumber = true;
     lastBtnClickedDelete = false;
-      
+                              
     if(lastBtnClickedPoint === true)
         decimals++;
-
+                        
     if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
-
     }
     else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
         upperScreen.textContent += number.textContent;
         numbersString += number.textContent;  
     }
-
+                        
     if(number.getAttribute("id") === "."){
         lastBtnClickedPoint = true;
         decimals = 0;
     }
+}
 
-}));
-
-operators.forEach( operator => operator.addEventListener( "click", () =>{
+function manageOperator (operator){
     lastDigitIsNumber = false;
     lastBtnClickedDelete = false;
     lastDigitIsDot = false;
@@ -123,12 +95,14 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
+            secondNumber = null;
             skipAssign = true;
             firstOperator = null;
             secondOperator = null; 
             lastOperatorAssign = true;      /*we just can't do, like in line 129, firstOperator = secondOperator, because we can't pass to the operate function the =
                                               operator. We need to reset both operators and wait for the user to input the first operator and the second operator again. 
                                               It's like we will start from fresh with the previous resulting number*/
+            console.log("ao")
         }
     }
     else if (firstOperator !== null && secondOperator !== null){        
@@ -147,6 +121,7 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation
         }
+        
     }
     else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
 
@@ -157,10 +132,9 @@ operators.forEach( operator => operator.addEventListener( "click", () =>{
         upperScreen.textContent +=operator.getAttribute("id"); 
     else 
         upperScreen.textContent +=operator.textContent; 
-}));
+}
 
-//add the event listeners for the special buttons
-specialBtns.forEach(btn => btn.addEventListener("click", () =>{
+function manageDelete(btn){
     if(btn.getAttribute("id") === "clear"){
         //reset anything
         numbersString = "";
@@ -206,4 +180,35 @@ specialBtns.forEach(btn => btn.addEventListener("click", () =>{
         }
         lastBtnClickedDelete = true;
     }
-}));
+}
+const numbers = document.querySelectorAll(".number"); 
+const operators = document.querySelectorAll(".operator"); 
+const specialBtns = document.querySelectorAll(".special");
+const upperScreen = document.querySelector("#upper");
+const lowerScreen = document.querySelector("#lower");
+
+let firstNumber = null;
+let firstOperator = null;
+let secondNumber = null;
+let secondOperator = null;
+
+let numbersString = ""; //temporary string that will store the number typed in the calculator
+
+let lastDigitIsDot = false;
+let decimals;
+let lastDigitIsNumber = false; 
+let lastOperatorAssign = false; 
+let lastBtnClickedDelete = false;  
+let lastBtnClickedPoint = false;
+let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
+                          first and second operator, as well as the numbers. The skipAssign flag makes possible 
+                          that when you press the = the first number of the next operation becomes the result of the
+                          previous expression evaluated, making it skip the assignment of the firstNumber from the 
+                          numberString*/
+
+
+numbers.forEach( number => number.addEventListener("click", manageDigit.bind(this,number)));
+
+operators.forEach( operator => operator.addEventListener( "click", manageOperator.bind(this,operator)));
+
+specialBtns.forEach(btn => btn.addEventListener("click", manageDelete.bind(this,btn)));
