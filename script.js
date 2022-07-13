@@ -39,26 +39,42 @@ function operate(operator, a, b){
 function manageDigit(number){
     if(!lastDigitIsNumber)
     lastBtnClickedPoint = false;
-                            
+                        
     if (lastDigitIsDot)
         lastBtnClickedPoint = true;
-                            
+                        
     lastDigitIsNumber = true;
     lastBtnClickedDelete = false;
-                              
+                          
     if(lastBtnClickedPoint === true)
         decimals++;
+                    
+    //number is a DOM node
+    if(typeof number.altKey ===  "undefined"){  //remember that if you check for a property that does not exist in an object, it always return undefined and not errors
+        if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
+        }
+        else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
+            upperScreen.textContent += number.textContent;
+            numbersString += number.textContent;  
+        }
                         
-    if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
-    }
-    else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
-        upperScreen.textContent += number.textContent;
-        numbersString += number.textContent;  
-    }
-                        
-    if(number.getAttribute("id") === "."){
-        lastBtnClickedPoint = true;
-        decimals = 0;
+        if(number.getAttribute("id") === "."){
+            lastBtnClickedPoint = true;
+            decimals = 0;
+        }
+    }else{
+        //number is the event passed from keydown
+        if(lastBtnClickedPoint === true && number.key === "."){
+        }
+        else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
+            upperScreen.textContent += number.key;
+            numbersString += number.key
+        }
+
+        if(number.key === "."){
+            lastBtnClickedPoint = true;
+            decimals = 0;
+        }
     }
 }
 
@@ -102,7 +118,6 @@ function manageOperator (operator){
             lastOperatorAssign = true;      /*we just can't do, like in line 129, firstOperator = secondOperator, because we can't pass to the operate function the =
                                               operator. We need to reset both operators and wait for the user to input the first operator and the second operator again. 
                                               It's like we will start from fresh with the previous resulting number*/
-            console.log("ao")
         }
     }
     else if (firstOperator !== null && secondOperator !== null){        
@@ -181,6 +196,7 @@ function manageDelete(btn){
         lastBtnClickedDelete = true;
     }
 }
+
 const numbers = document.querySelectorAll(".number"); 
 const operators = document.querySelectorAll(".operator"); 
 const specialBtns = document.querySelectorAll(".special");
@@ -206,8 +222,9 @@ let skipAssign = false; /*when you press the equal sign to evaluate an expressio
                           previous expression evaluated, making it skip the assignment of the firstNumber from the 
                           numberString*/
 
-
 numbers.forEach( number => number.addEventListener("click", manageDigit.bind(this,number)));
+
+window.addEventListener("keydown", manageDigit.bind(this));
 
 operators.forEach( operator => operator.addEventListener( "click", manageOperator.bind(this,operator)));
 
