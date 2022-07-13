@@ -39,41 +39,40 @@ function operate(operator, a, b){
 function manageDigit(number, isNode){
     if(!mathError){
     if(!lastDigitIsNumber)
-    lastBtnClickedPoint = false;
+        dotIsPresent = false;
                         
     if (lastDigitIsDot)
-        lastBtnClickedPoint = true;
+        dotIsPresent = true;
                         
     lastDigitIsNumber = true;
     lastBtnClickedDelete = false;
                           
-    if(lastBtnClickedPoint === true)
+    if(dotIsPresent === true)
         decimals++;
                     
     //number is a DOM node
     if(isNode){
-        if(lastBtnClickedPoint === true && number.getAttribute("id") === "."){
+        if(dotIsPresent === true && number.getAttribute("id") === "."){
         }
-        else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
+        else if(dotIsPresent === false || dotIsPresent === true && decimals <= 1 ){
             upperScreen.textContent += number.textContent;
             numbersString += number.textContent;  
         }
                         
         if(number.getAttribute("id") === "."){
-            lastBtnClickedPoint = true;
+            dotIsPresent = true;
             decimals = 0;
         }
     }else{
-        //number is the event passed from keydown
-        if(lastBtnClickedPoint === true && number.key === "."){
+        if(dotIsPresent === true && number.key === "."){
         }
-        else if(lastBtnClickedPoint === false || lastBtnClickedPoint === true && decimals <= 1 ){
+        else if(dotIsPresent === false || dotIsPresent === true && decimals <= 1 ){
             upperScreen.textContent += number.key;
             numbersString += number.key
         }
 
         if(number.key === "."){
-            lastBtnClickedPoint = true;
+            dotIsPresent = true;
             decimals = 0;
         }
     }
@@ -87,7 +86,7 @@ function manageOperator (operator, isNode){
     lastDigitIsDot = false;
 
     if (firstOperator === null){
-        if(!skipAssign){
+        if(!skipAssign){    
             firstNumber = +numbersString;
             numbersString="";
         }
@@ -102,6 +101,7 @@ function manageOperator (operator, isNode){
     }else{    
         secondNumber = +numbersString;
         numbersString="";    
+
         if(isNode) 
             secondOperator = operator.getAttribute("id");
         else
@@ -124,6 +124,7 @@ function manageOperator (operator, isNode){
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
             secondNumber = null;
             skipAssign = true;
+
             firstOperator = null;
             secondOperator = null; 
             lastOperatorAssign = true;      /*we just can't do, like in line 129, firstOperator = secondOperator, because we can't pass to the operate function the =
@@ -144,13 +145,12 @@ function manageOperator (operator, isNode){
                 upperScreen.textContent += operator.key;
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
-            firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation
-        
-        
+            firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation        
     }
     else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
 
         lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
+        
         if(isNode)
             upperScreen.textContent +=operator.getAttribute("id"); 
         else
@@ -178,7 +178,7 @@ function manageDelete(btn, isNode){
             secondOperator = null;
             skipAssign = false;
             lastOperatorAssign = false;
-            lastBtnClickedPoint = false;
+            dotIsPresent = false;
             lastBtnClickedDelete = false;
             lastDigitIsDot = false;
             mathError = false;
@@ -226,7 +226,7 @@ function manageDelete(btn, isNode){
         secondOperator = null;
         skipAssign = false;
         lastOperatorAssign = false;
-        lastBtnClickedPoint = false;
+        dotIsPresent = false;
         lastBtnClickedDelete = false;
         lastDigitIsDot = false;
 
@@ -294,7 +294,7 @@ let decimals;
 let lastDigitIsNumber = false; 
 let lastOperatorAssign = false; 
 let lastBtnClickedDelete = false;  
-let lastBtnClickedPoint = false;
+let dotIsPresent = false;
 let skipAssign = false; /*when you press the equal sign to evaluate an expression, it will reset the
                           first and second operator, as well as the numbers. The skipAssign flag makes possible 
                           that when you press the = the first number of the next operation becomes the result of the
