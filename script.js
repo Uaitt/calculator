@@ -166,8 +166,55 @@ function manageOperator (operator, isNode){
             upperScreen.textContent += operator.key;
 }
 
-function manageDelete(btn){
-    if(btn.getAttribute("id") === "clear"){
+function manageDelete(btn, isNode){
+    if(isNode){
+        if(btn.getAttribute("id") === "clear"){
+            //reset anything
+            numbersString = "";
+            firstNumber = null;
+            firstOperator = null;
+            secondNumber = null;
+            secondOperator = null;
+            skipAssign = false;
+            lastOperatorAssign = false;
+            lastBtnClickedPoint = false;
+            lastBtnClickedDelete = false;
+            lastDigitIsDot = false;
+
+            upperScreen.textContent = "";
+            lowerScreen.textContent = "";
+        }
+        else{
+            if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
+                if(lastDigitIsNumber){
+                    numbersString = numbersString.slice(0,-1)
+                    upperScreen.textContent = upperScreen.textContent.slice(0,-1)
+                
+                    if(numbersString === " " || numbersString.includes(".")){
+                        lastDigitIsNumber = false;
+                        decimals = 0;
+                        lastDigitIsDot= true;
+                    }
+                }
+                else if(firstOperator !== null && secondOperator == null){
+                    upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+                    firstOperator = null;
+                    skipAssign = true;
+                    lastDigitIsNumber = true;
+                }
+                else if(firstOperator !== null && secondOperator !== null){
+                    upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+                    secondOperator = null;
+                    firstOperator = null;
+                    skipAssign = true;
+                    lastDigitIsNumber = true;
+                }
+            }
+            lastBtnClickedDelete = true;
+        }
+    }
+    else{
+        if(btn.key === "clear"){
         //reset anything
         numbersString = "";
         firstNumber = null;
@@ -182,38 +229,37 @@ function manageDelete(btn){
 
         upperScreen.textContent = "";
         lowerScreen.textContent = "";
-    }
-    else if (btn.getAttribute("id") === "delete"){
-
-        if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
-            if(lastDigitIsNumber){
-                numbersString = numbersString.slice(0,-1)
-                upperScreen.textContent = upperScreen.textContent.slice(0,-1)
-            
-                if(numbersString === " " || numbersString.includes(".")){
-                    lastDigitIsNumber = false;
-                    decimals = 0;
-                    lastDigitIsDot= true;
+        }
+        else{
+            if(!lastBtnClickedDelete){  //with this condition the user can only delete one digit/operator
+                if(lastDigitIsNumber){
+                    numbersString = numbersString.slice(0,-1)
+                    upperScreen.textContent = upperScreen.textContent.slice(0,-1)
+                
+                    if(numbersString === " " || numbersString.includes(".")){
+                        lastDigitIsNumber = false;
+                        decimals = 0;
+                        lastDigitIsDot= true;
+                    }
+                }
+                else if(firstOperator !== null && secondOperator == null){
+                    upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+                    firstOperator = null;
+                    skipAssign = true;
+                    lastDigitIsNumber = true;
+                }
+                else if(firstOperator !== null && secondOperator !== null){
+                    upperScreen.textContent = upperScreen.textContent.slice(0,-1);
+                    secondOperator = null;
+                    firstOperator = null;
+                    skipAssign = true;
+                    lastDigitIsNumber = true;
                 }
             }
-            else if(firstOperator !== null && secondOperator == null){
-                upperScreen.textContent = upperScreen.textContent.slice(0,-1);
-                firstOperator = null;
-                skipAssign = true;
-                lastDigitIsNumber = true;
-            }
-            else if(firstOperator !== null && secondOperator !== null){
-                upperScreen.textContent = upperScreen.textContent.slice(0,-1);
-                secondOperator = null;
-                firstOperator = null;
-                skipAssign = true;
-                lastDigitIsNumber = true;
-            }
+            lastBtnClickedDelete = true;
         }
-        lastBtnClickedDelete = true;
     }
 }
-
 const numbers = document.querySelectorAll(".number"); 
 const operators = document.querySelectorAll(".operator"); 
 const specialBtns = document.querySelectorAll(".special");
