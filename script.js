@@ -82,6 +82,7 @@ function manageDigit(number, isNode){
 
 function manageOperator (operator, isNode){
 
+    if(lastDigitIsNumber || lastOperatorAssign){
     if(!mathError){
         lastDigitIsNumber = false;
         lastDigitIsDot = false;
@@ -147,11 +148,13 @@ function manageOperator (operator, isNode){
                 upperScreen.textContent += operator.key;
 
             firstNumber = operate(firstOperator,firstNumber,secondNumber);
-            firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation        
+            firstOperator = secondOperator; //when the user inputs a second operator different from =, that operator can be saved and used for the next operation  
+            lastOperatorAssign = false;      
         }
         else if(firstOperator === "!" && secondOperator === null || lastOperatorAssign && firstOperator === "!"){
 
             lowerScreen.textContent = +operate(firstOperator,firstNumber,secondNumber).toFixed(2);
+            lastOperatorAssign = false;
         
             if(isNode)
                 upperScreen.textContent +=operator.getAttribute("id"); 
@@ -159,14 +162,18 @@ function manageOperator (operator, isNode){
                 upperScreen.textContent += operator.key
         }
         else if(isNode){
+            lastOperatorAssign = false;
             if(operator.getAttribute("id") === "!" || operator.getAttribute("id") === "^")
                 upperScreen.textContent +=operator.getAttribute("id");
             else
                 upperScreen.textContent +=operator.textContent;
         }
-        else 
+        else {
         upperScreen.textContent += operator.key;
+        lastOperatorAssign = false
+        }
     }
+}
 }
 
 function manageDelete(btn, isNode){
